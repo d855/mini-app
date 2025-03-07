@@ -7,19 +7,29 @@
 	$db = new Database($config['database']);
 	
 	$heading = 'Note';
-	
-	$id = $_GET['id'];
-
+    
 	$userId = 1;
-	
-	$note = $db->query(
-		"select * from notes where id = :id",
-		['id' => $id]
-	)->findOrFail();
     
-	authorize($note['user_id'] === $userId);
-    
-    view('notes/show', [
-        'heading' => $heading,
-        'note' => $note
-    ]);;
+    if($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $note = $db->query('select * from notes where id = :id', ['id' => $_POST['id']])->findOrFail();
+        
+        authorize($note['user_id'] === $userId);
+        
+        $db->query('delete from notes where id = :id', ['id' => $_POST['id']]);
+        
+        header('Location: /notes');
+        
+        exit;
+    } else {
+        $note = $db->query(
+            "select * from notes where id = :id",
+            ['id' => $_GET['id']]
+        )->findOrFail();
+        
+        authorize($note['user_id'] === $userId);
+        
+        view('notes/show', [
+            'heading' => $heading,
+            'note' => $note
+        ]);   
+    }
