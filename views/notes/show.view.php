@@ -12,6 +12,9 @@
 			
 			<form method="POST">
 				<input type="hidden" name="id" value="<?= $note['id'] ?>">
+				
+				<input type="hidden" name="_method" value="DELETE">
+				
 				<button type="submit" class="block mt-10 bg-red-500 text-white w-fit px-3 py-2">Delete note</button>
 			</form>
 		</div>
